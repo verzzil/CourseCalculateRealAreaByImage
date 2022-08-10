@@ -24,14 +24,15 @@ class SelectionCanvas @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
+    private lateinit var mCanvas: Canvas
+    private lateinit var mBitmap: Bitmap
+
     private val mPath: Path = Path()
     private val mPaintStrokeRed: Paint = Paint().apply {
         color = Color.RED
         style = Paint.Style.STROKE
         strokeWidth = 10f
     }
-    private lateinit var mCanvas: Canvas
-    private lateinit var mBitmap: Bitmap
 
     private var prevX = 0f
     private var prevY = 0f

@@ -186,48 +186,48 @@ class CardSelectionCanvas @JvmOverloads constructor(
     }
 
     private fun redrawResizeSquares() {
-        topLeftRect.set(topLeftX - 20, topLeftY - 20, topLeftX + 20, topLeftY + 20)
+        topLeftRect.set(topLeftX - RESIZE_SQUARES_SIZE, topLeftY - RESIZE_SQUARES_SIZE, topLeftX + RESIZE_SQUARES_SIZE, topLeftY + RESIZE_SQUARES_SIZE)
         topCenterRect.set(
-            selectionRect.width() / 2 + topLeftX - 20,
-            topLeftY - 20,
-            selectionRect.width() / 2 + topLeftX + 20,
-            topLeftY + 20
+            selectionRect.width() / 2 + topLeftX - RESIZE_SQUARES_SIZE,
+            topLeftY - RESIZE_SQUARES_SIZE,
+            selectionRect.width() / 2 + topLeftX + RESIZE_SQUARES_SIZE,
+            topLeftY + RESIZE_SQUARES_SIZE
         )
         topRightRect.set(
-            selectionRect.width() + topLeftX - 20,
-            topLeftY - 20,
-            selectionRect.width() + topLeftX + 20,
-            topLeftY + 20
+            selectionRect.width() + topLeftX - RESIZE_SQUARES_SIZE,
+            topLeftY - RESIZE_SQUARES_SIZE,
+            selectionRect.width() + topLeftX + RESIZE_SQUARES_SIZE,
+            topLeftY + RESIZE_SQUARES_SIZE
         )
         bottomLeftRect.set(
-            topLeftX - 20,
-            selectionRect.height() + topLeftY - 20,
-            topLeftX + 20,
-            selectionRect.height() + topLeftY + 20
+            topLeftX - RESIZE_SQUARES_SIZE,
+            selectionRect.height() + topLeftY - RESIZE_SQUARES_SIZE,
+            topLeftX + RESIZE_SQUARES_SIZE,
+            selectionRect.height() + topLeftY + RESIZE_SQUARES_SIZE
         )
         bottomCenterRect.set(
-            selectionRect.width() / 2 + topLeftX - 20,
-            selectionRect.height() + topLeftY - 20,
-            selectionRect.width() / 2 + topLeftX + 20,
-            selectionRect.height() + topLeftY + 20
+            selectionRect.width() / 2 + topLeftX - RESIZE_SQUARES_SIZE,
+            selectionRect.height() + topLeftY - RESIZE_SQUARES_SIZE,
+            selectionRect.width() / 2 + topLeftX + RESIZE_SQUARES_SIZE,
+            selectionRect.height() + topLeftY + RESIZE_SQUARES_SIZE
         )
         bottomRightRect.set(
-            selectionRect.width() + topLeftX - 20,
-            selectionRect.height() + topLeftY - 20,
-            selectionRect.width() + topLeftX + 20,
-            selectionRect.height() + topLeftY + 20
+            selectionRect.width() + topLeftX - RESIZE_SQUARES_SIZE,
+            selectionRect.height() + topLeftY - RESIZE_SQUARES_SIZE,
+            selectionRect.width() + topLeftX + RESIZE_SQUARES_SIZE,
+            selectionRect.height() + topLeftY + RESIZE_SQUARES_SIZE
         )
         leftEdgeRect.set(
-            topLeftX - 20,
-            selectionRect.height() / 2 + topLeftY - 20,
-            topLeftX + 20,
-            selectionRect.height() / 2 + topLeftY + 20
+            topLeftX - RESIZE_SQUARES_SIZE,
+            selectionRect.height() / 2 + topLeftY - RESIZE_SQUARES_SIZE,
+            topLeftX + RESIZE_SQUARES_SIZE,
+            selectionRect.height() / 2 + topLeftY + RESIZE_SQUARES_SIZE
         )
         rightEdgeRect.set(
-            selectionRect.width() + topLeftX - 20,
-            selectionRect.height() / 2 + topLeftY - 20,
-            selectionRect.width() + topLeftX + 20,
-            selectionRect.height() / 2 + topLeftY + 20
+            selectionRect.width() + topLeftX - RESIZE_SQUARES_SIZE,
+            selectionRect.height() / 2 + topLeftY - RESIZE_SQUARES_SIZE,
+            selectionRect.width() + topLeftX + RESIZE_SQUARES_SIZE,
+            selectionRect.height() / 2 + topLeftY + RESIZE_SQUARES_SIZE
         )
     }
 
@@ -241,6 +241,10 @@ class CardSelectionCanvas @JvmOverloads constructor(
         topLeftY = topY
         set(topX, topY, bottomX, bottomY)
         redrawResizeSquares()
+    }
+
+    companion object {
+        private const val RESIZE_SQUARES_SIZE = 25
     }
 }
 
