@@ -72,69 +72,22 @@ class CardSelectionCanvas @JvmOverloads constructor(
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 when (selectionMode) {
-                    SelectionMode.Waiting -> {
-                        topLeftX = x
-                        topLeftY = y
-                        selectionRect.set(x, y, x, y)
-
-                        selectionMode = SelectionMode.Selection
-                    }
-
+                    SelectionMode.Waiting ->
+                        touchDownInSelectionMode(x, y)
                     SelectionMode.Selection -> {}
-
-                    is SelectionMode.ResizeSelection -> {
-                        selectionMode = when {
-                            topLeftRect.intersectWithPoint(x, y) ->
-                                SelectionMode.ResizeSelection(topLeftRect)
-                            topCenterRect.intersectWithPoint(x, y) ->
-                                SelectionMode.ResizeSelection(topCenterRect)
-                            topRightRect.intersectWithPoint(x, y) ->
-                                SelectionMode.ResizeSelection(topRightRect)
-                            leftEdgeRect.intersectWithPoint(x, y) ->
-                                SelectionMode.ResizeSelection(leftEdgeRect)
-                            rightEdgeRect.intersectWithPoint(x, y) ->
-                                SelectionMode.ResizeSelection(rightEdgeRect)
-                            bottomLeftRect.intersectWithPoint(x, y) ->
-                                SelectionMode.ResizeSelection(bottomLeftRect)
-                            bottomCenterRect.intersectWithPoint(x, y) ->
-                                SelectionMode.ResizeSelection(bottomCenterRect)
-                            bottomRightRect.intersectWithPoint(x, y) ->
-                                SelectionMode.ResizeSelection(bottomRightRect)
-                            else ->
-                                SelectionMode.ResizeSelection()
-                        }
-                    }
+                    is SelectionMode.ResizeSelection ->
+                        touchDownInResizeMode(x, y)
                 }
             }
             MotionEvent.ACTION_MOVE -> {
                 when (selectionMode) {
                     SelectionMode.Waiting -> {}
                     SelectionMode.Selection -> {
-                        setSizeForRects(x, y)
+                        touchMoveInSelectionMode(x, y)
                         invalidate()
                     }
                     is SelectionMode.ResizeSelection -> {
-                        (selectionMode as SelectionMode.ResizeSelection).rect?.let {
-                            when (it) {
-                                topLeftRect ->
-                                    selectionRect.setOptionally(topX = x, topY = y)
-                                topCenterRect ->
-                                    selectionRect.setOptionally(topY = y)
-                                topRightRect ->
-                                    selectionRect.setOptionally(topY = y, bottomX = x)
-                                leftEdgeRect ->
-                                    selectionRect.setOptionally(topX = x)
-                                rightEdgeRect ->
-                                    selectionRect.setOptionally(bottomX = x)
-                                bottomLeftRect ->
-                                    selectionRect.setOptionally(topX = x, bottomY = y)
-                                bottomCenterRect ->
-                                    selectionRect.setOptionally(bottomY = y)
-                                bottomRightRect ->
-                                    selectionRect.setOptionally(bottomX = x, bottomY = y)
-                                else -> {}
-                            }
-                        }
+                        touchMoveInResizeMode(x, y)
                         invalidate()
                     }
                 }
@@ -153,6 +106,67 @@ class CardSelectionCanvas @JvmOverloads constructor(
         return true
     }
 
+    private fun touchDownInSelectionMode(x: Int, y: Int) {
+        topLeftX = x
+        topLeftY = y
+        selectionRect.set(x, y, x, y)
+
+        selectionMode = SelectionMode.Selection
+    }
+
+    private fun touchDownInResizeMode(x: Int, y: Int) {
+        selectionMode = when {
+            topLeftRect.intersectWithPoint(x, y) ->
+                SelectionMode.ResizeSelection(topLeftRect)
+            topCenterRect.intersectWithPoint(x, y) ->
+                SelectionMode.ResizeSelection(topCenterRect)
+            topRightRect.intersectWithPoint(x, y) ->
+                SelectionMode.ResizeSelection(topRightRect)
+            leftEdgeRect.intersectWithPoint(x, y) ->
+                SelectionMode.ResizeSelection(leftEdgeRect)
+            rightEdgeRect.intersectWithPoint(x, y) ->
+                SelectionMode.ResizeSelection(rightEdgeRect)
+            bottomLeftRect.intersectWithPoint(x, y) ->
+                SelectionMode.ResizeSelection(bottomLeftRect)
+            bottomCenterRect.intersectWithPoint(x, y) ->
+                SelectionMode.ResizeSelection(bottomCenterRect)
+            bottomRightRect.intersectWithPoint(x, y) ->
+                SelectionMode.ResizeSelection(bottomRightRect)
+            else ->
+                SelectionMode.ResizeSelection()
+        }
+    }
+
+    private fun touchMoveInSelectionMode(x: Int, y: Int) {
+        selectionRect.set(topLeftX, topLeftY, x, y)
+
+        redrawResizeSquares()
+    }
+
+    private fun touchMoveInResizeMode(x: Int, y: Int) {
+        (selectionMode as SelectionMode.ResizeSelection).rect?.let {
+            when (it) {
+                topLeftRect ->
+                    selectionRect.setOptionally(topX = x, topY = y)
+                topCenterRect ->
+                    selectionRect.setOptionally(topY = y)
+                topRightRect ->
+                    selectionRect.setOptionally(topY = y, bottomX = x)
+                leftEdgeRect ->
+                    selectionRect.setOptionally(topX = x)
+                rightEdgeRect ->
+                    selectionRect.setOptionally(bottomX = x)
+                bottomLeftRect ->
+                    selectionRect.setOptionally(topX = x, bottomY = y)
+                bottomCenterRect ->
+                    selectionRect.setOptionally(bottomY = y)
+                bottomRightRect ->
+                    selectionRect.setOptionally(bottomX = x, bottomY = y)
+                else -> {}
+            }
+        }
+    }
+
     private fun drawSelectionRectangle() {
         clear()
         mCanvas.drawRect(selectionRect, paintRect)
@@ -169,12 +183,6 @@ class CardSelectionCanvas @JvmOverloads constructor(
 
     private fun clear() {
         mCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-    }
-
-    private fun setSizeForRects(x: Int, y: Int) {
-        selectionRect.set(topLeftX, topLeftY, x, y)
-
-        redrawResizeSquares()
     }
 
     private fun redrawResizeSquares() {
