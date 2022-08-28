@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import com.xannanov.course.utils.intersectWithPoint
+import kotlin.math.abs
 
 class CardSelectionCanvas @JvmOverloads constructor(
     context: Context,
@@ -29,6 +30,7 @@ class CardSelectionCanvas @JvmOverloads constructor(
     private val paintRect: Paint = Paint().apply {
         color = Color.RED
         style = Paint.Style.FILL
+        alpha = 100
     }
     private val paintStrokeRect: Paint = Paint().apply {
         color = Color.GRAY
@@ -105,6 +107,8 @@ class CardSelectionCanvas @JvmOverloads constructor(
 
         return true
     }
+
+    fun selectionWidth() = abs(selectionRect.width())
 
     private fun touchDownInSelectionMode(x: Int, y: Int) {
         topLeftX = x

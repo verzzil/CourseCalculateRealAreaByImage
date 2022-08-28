@@ -158,7 +158,7 @@ class SelectionCanvas @JvmOverloads constructor(
         return result
     }
 
-    private fun calculateAreaInPixels(points: ArrayList<PointF>): Double {
+    public fun calculateAreaInPixels(points: ArrayList<Point> = getPointsOnPath(mPath)): Double {
         // Формула Гаусса
         var tempSum = .0
         for (i in 0 until points.size) {
