@@ -14,23 +14,24 @@ class CardSelectionCanvas @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
+
     private lateinit var mCanvas: Canvas
     private lateinit var mBitmap: Bitmap
 
-    private val selectionRect: Rect = Rect()
-    private val topLeftRect: Rect = Rect()
-    private val topCenterRect: Rect = Rect()
-    private val topRightRect: Rect = Rect()
-    private val bottomLeftRect: Rect = Rect()
-    private val bottomCenterRect: Rect = Rect()
-    private val bottomRightRect: Rect = Rect()
-    private val leftEdgeRect: Rect = Rect()
-    private val rightEdgeRect: Rect = Rect()
+    private var selectionRect: Rect = Rect()
+    private var topLeftRect: Rect = Rect()
+    private var topCenterRect: Rect = Rect()
+    private var topRightRect: Rect = Rect()
+    private var bottomLeftRect: Rect = Rect()
+    private var bottomCenterRect: Rect = Rect()
+    private var bottomRightRect: Rect = Rect()
+    private var leftEdgeRect: Rect = Rect()
+    private var rightEdgeRect: Rect = Rect()
 
     private val paintRect: Paint = Paint().apply {
         color = Color.RED
         style = Paint.Style.FILL
-        alpha = 100
+        alpha = 50
     }
     private val paintStrokeRect: Paint = Paint().apply {
         color = Color.GRAY
@@ -108,7 +109,30 @@ class CardSelectionCanvas @JvmOverloads constructor(
         return true
     }
 
-    fun selectionWidth() = abs(selectionRect.width())
+    fun reset() {
+        mCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+        selectionMode = SelectionMode.Waiting
+        selectionRect = Rect()
+        topLeftRect = Rect()
+        topCenterRect = Rect()
+        topRightRect = Rect()
+        bottomLeftRect = Rect()
+        bottomCenterRect = Rect()
+        bottomRightRect = Rect()
+        leftEdgeRect = Rect()
+        rightEdgeRect = Rect()
+        invalidate()
+    }
+
+    fun getMmInOnePx(): Float =
+        if (selectionWidth() > selectionHeight())
+            DEFAULT_CARD_WIDTH / selectionWidth()
+        else
+            DEFAULT_CARD_WIDTH / selectionHeight()
+
+    private fun selectionWidth() = abs(selectionRect.width()).toFloat()
+
+    private fun selectionHeight() = abs(selectionRect.height()).toFloat()
 
     private fun touchDownInSelectionMode(x: Int, y: Int) {
         topLeftX = x
@@ -190,7 +214,12 @@ class CardSelectionCanvas @JvmOverloads constructor(
     }
 
     private fun redrawResizeSquares() {
-        topLeftRect.set(topLeftX - RESIZE_SQUARES_SIZE, topLeftY - RESIZE_SQUARES_SIZE, topLeftX + RESIZE_SQUARES_SIZE, topLeftY + RESIZE_SQUARES_SIZE)
+        topLeftRect.set(
+            topLeftX - RESIZE_SQUARES_SIZE,
+            topLeftY - RESIZE_SQUARES_SIZE,
+            topLeftX + RESIZE_SQUARES_SIZE,
+            topLeftY + RESIZE_SQUARES_SIZE
+        )
         topCenterRect.set(
             selectionRect.width() / 2 + topLeftX - RESIZE_SQUARES_SIZE,
             topLeftY - RESIZE_SQUARES_SIZE,
@@ -249,6 +278,9 @@ class CardSelectionCanvas @JvmOverloads constructor(
 
     companion object {
         private const val RESIZE_SQUARES_SIZE = 25
+
+        private const val DEFAULT_CARD_WIDTH = 86f
+        private const val DEFAULT_CARD_HEIGHT = 54f
     }
 }
 

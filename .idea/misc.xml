@@ -3,8 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Projects/android/Course/app/src/main/res/layout/activity_camera.xml" value="0.25416666666666665" />
-        <entry key="..\:/Projects/android/Course/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Projects/android/Course/app/src/main/res/layout/activity_camera.xml" value="0.152" />
+        <entry key="..\:/Projects/android/Course/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/Projects/android/Course/app/src/main/res/layout/area_select_mode.xml" value="0.253125" />
+        <entry key="..\:/Projects/android/Course/app/src/main/res/layout/card_select_mode.xml" value="0.253125" />
+        <entry key="..\:/Projects/android/Course/app/src/main/res/layout/photo_mode.xml" value="0.152" />
+        <entry key="..\:/Projects/android/Course/app/src/main/res/layout/select_mode.xml" value="0.152" />
       </map>
     </option>
   </component>

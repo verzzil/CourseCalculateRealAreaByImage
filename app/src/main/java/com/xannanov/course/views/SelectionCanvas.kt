@@ -24,21 +24,30 @@ class SelectionCanvas @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
+    var touchUpListener: () -> Unit  = {}
+
     private lateinit var mCanvas: Canvas
     private lateinit var mBitmap: Bitmap
 
-    private val mPath: Path = Path()
+    private var mPath: Path = Path()
     private val mPaintStrokeRed: Paint = Paint().apply {
         color = Color.RED
         style = Paint.Style.STROKE
-        strokeWidth = 10f
+        strokeWidth = 5f
+    }
+
+    private val targetPath: Path = Path()
+    private val targetPaint: Paint = Paint().apply {
+        color = Color.BLUE
+        style = Paint.Style.STROKE
+        strokeWidth = 5f
     }
 
     private var prevX = 0f
     private var prevY = 0f
 
     private var paintMode: PaintMode = PaintMode.IDLE
-    private var paintMethod: PaintMethod = PaintMethod.Finger
+    private var paintMethod: PaintMethod = PaintMethod.FingerWithOffset
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
@@ -105,8 +114,24 @@ class SelectionCanvas @JvmOverloads constructor(
         return paintMode != PaintMode.Finished
     }
 
-    fun clear() {
+    fun calculateAreaInPixels(points: ArrayList<Point> = getPointsOnPath(mPath)): Double {
+        // Формула Гаусса
+        var tempSum = .0
+        for (i in 0 until points.size) {
+            tempSum += points[i].x * points[(i + 1) % points.size].y -
+                    points[(i + 1) % points.size].x * points[i].y
+        }
 
+        return .5 * abs(tempSum)
+    }
+
+    fun reset() {
+        if (::mCanvas.isInitialized) {
+            mPath.rewind()
+            mCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+            paintMode = PaintMode.IDLE
+            invalidate()
+        }
     }
 
     private fun touchStart(x: Float, y: Float) {
@@ -115,30 +140,61 @@ class SelectionCanvas @JvmOverloads constructor(
         prevX = x
         prevY = y
 
+        if (paintMethod == PaintMethod.FingerWithOffset)
+            drawTarget(x, y)
+
         mPath.moveTo(x, y)
+    }
+
+    private fun drawTarget(x: Float, y: Float) {
+        targetPath.rewind()
+        targetPath.moveTo(x - 10, y)
+        targetPath.lineTo(x - 50, y)
+
+        targetPath.moveTo(x + 10, y)
+        targetPath.lineTo(x + 50, y)
+
+        targetPath.moveTo(x, y - 10)
+        targetPath.lineTo(x, y - 50)
+
+        targetPath.moveTo(x, y + 10)
+        targetPath.lineTo(x, y + 50)
+        targetPaint.xfermode = null
+        mCanvas.drawPath(targetPath, targetPaint)
+    }
+
+    private fun clearTarget() {
+        targetPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+        mCanvas.drawPath(targetPath, targetPaint)
     }
 
     private fun touchMove(x: Float, y: Float) {
         mPath.lineTo(x, y)
+        clearTarget()
+        drawTarget(x, y)
     }
 
     private fun touchUp(x: Float, y: Float) {
-        if (prevX != x && prevY != y) {
+        if (prevX != x || prevY != y) {
             mPath.lineTo(x, y)
+            mPath.close()
             paintMode = PaintMode.Finishing
+            touchUpListener()
         }
+        clearTarget()
     }
 
     private fun drawBackground() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+        mCanvas.save()
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
             mCanvas.clipPath(mPath, Region.Op.DIFFERENCE)
-        } else {
+        else
             mCanvas.clipOutPath(mPath)
-        }
 
         mCanvas.drawColor(Color.argb(180, 0, 0, 0))
 
         paintMode = PaintMode.Finished
+        mCanvas.restore()
     }
 
     private fun getPointsOnPath(path: Path): ArrayList<Point> {
@@ -158,19 +214,8 @@ class SelectionCanvas @JvmOverloads constructor(
         return result
     }
 
-    public fun calculateAreaInPixels(points: ArrayList<Point> = getPointsOnPath(mPath)): Double {
-        // Формула Гаусса
-        var tempSum = .0
-        for (i in 0 until points.size) {
-            tempSum += points[i].x * points[(i + 1) % points.size].y -
-                    points[(i + 1) % points.size].x * points[i].y
-        }
-
-        return .5 * abs(tempSum)
-    }
-
     companion object {
-        private const val DEFAULT_OFFSET = 50
+        private const val DEFAULT_OFFSET = 100
     }
 }
 
