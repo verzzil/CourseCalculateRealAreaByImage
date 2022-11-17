@@ -6,10 +6,32 @@ object Dependencies {
         const val material = "com.google.android.material:material:1.6.1"
     }
 
+    object Coroutines {
+        private const val version = "1.3.9"
+
+        const val lib = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
+    }
+
     object Lifecycle {
+        private const val version = "2.4.0"
         const val lifecycleKtx = "androidx.lifecycle:lifecycle-runtime-ktx:2.3.1"
         const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07"
         const val activityCompose = "androidx.activity:activity-compose:1.3.1"
+        const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
+        const val livedata = "androidx.lifecycle:lifecycle-livedata-ktx:$version"
+        const val kapt = "androidx.lifecycle:lifecycle-compiler:$version"
+        const val java8 = "androidx.lifecycle:lifecycle-common-java8:$version"
+    }
+
+    object CameraX {
+        private const val version = "1.1.0"
+
+        const val core = "androidx.camera:camera-core:$version"
+        const val camera2 = "androidx.camera:camera-camera2:$version"
+        const val lifecycle = "androidx.camera:camera-lifecycle:$version"
+        const val view = "androidx.camera:camera-view:$version"
+        const val extensions = "androidx.camera:camera-extensions:$version"
+        const val video = "androidx.camera:camera-video:$version"
     }
 
     object Compose {
@@ -51,6 +73,7 @@ object Dependencies {
     object Log {
         object Timber {
             private const val version = "5.0.1"
+
             const val lib = "com.jakewharton.timber:timber:$version"
         }
     }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CameraActivity">
+
+    <include
+        android:id="@+id/ph_mode"
+        layout="@layout/photo_mode" />
+
+    <include
+        android:id="@+id/select_mode"
+        layout="@layout/select_mode"
+        android:visibility="gone" />
+</androidx.constraintlayout.widget.ConstraintLayout>
